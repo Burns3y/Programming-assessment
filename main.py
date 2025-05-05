@@ -74,7 +74,7 @@ class PlayerScore:
             number of correct answers and incorrect questions.
             
             Also store the questions and answers."""
-        
+
 
         self.questions = {
             "What is the chemical symbol for gold?": ["Au", "Ag", "Fe", "Pb", "Au"],
@@ -92,7 +92,6 @@ class PlayerScore:
             "When was the first manned moon landing?": ["1969", "1970", "1968", "1971", "1969"],
             "Who painted the Mona Lisa?": ["Vincent Van Gogh", "Picasso", "Leonardo Da Vinci", "Leonardo DiCaprio", "Da Vinci"],
             "What is the largest country in the world by land mass?": ["USA", "China", "Russia", "Canada", "Russia"],
-            #Making the questions more difficult
             "What is the capital of Mongolia?": ["Ulaanbaatar", "Beijing", "Seoul", "Tokyo", "Ulaanbaatar"],
             "What is the chemical symbol for potassium?": ["K", "P", "Na", "Ca", "K"],
             "What is the largest volcano in the world?": ["Mauna Loa", "Kilimanjaro", "Mount Fuji", "Mount St. Helens", "Mauna Loa"],
@@ -100,6 +99,9 @@ class PlayerScore:
             "what is the largest island in the world?": ["Greenland", "Australia", "New Guinea", "Borneo", "Greenland"],
             "When were women first allowed to vote in New Zealand?": ["1893", "1902", "1910", "1920", "1893"],
             "What is the capital of Canada?": ["Toronto", "Ottawa", "Vancouver", "Montreal", "Ottawa"],
+            "When was the first email sent?": ["1971", "1980", "1990", "2000", "1971"],
+            "Who was the first person to reach the South Pole?": ["Roald Amundsen", "Robert Falcon Scott", "Ernest Shackleton", "Ferdinand Magellan", "Roald Amundsen"],
+            "When was the first photograph taken?": ["1826", "1839", "1840", "1850", "1826"],
 }
         self.name = name
         self.correct_answers = 0
