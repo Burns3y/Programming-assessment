@@ -46,5 +46,7 @@ class UsefulMethods:
             "Which is the only continent without reptiles or snakes?": ["Asia", "Europe", "Antarctica", "North America", "Antarctica"],
             "What is the square root of 144?": ["10", "11", "12", "13", "12"],
             "Which company created the iPhone?": ["Samsung", "Google", "Microsoft", "Apple", "Apple"],
-            "What is the smallest bone in the human body?": ["Stapes", "Femur", "Ulna", "Tibia", "Stapes"]
+            "What is the smallest bone in the human body?": ["Stapes", "Femur", "Ulna", "Tibia", "Stapes"],
+            "Who has the most over all points in the NBA?": ["Michael Jordan", "Joseph Hurndell", "LeBron James", "Kobe Bryant", "Joseph Hurndell"],
+            "What is the average penis size (in mm)" : ["1", "2", "5", "6", "2"]
     }

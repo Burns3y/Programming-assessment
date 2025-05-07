@@ -40,6 +40,7 @@ class GUI:
         # Answer options
         self.answer_frame = Frame(self.parent, bg=PURPLE2)
         self.answer = StringVar(self.parent)
+        self.answer.set(0)
         self.answer_frame.grid(row=2, column=0, columnspan=2)
 
         answer_options = [("Option 1", 1), ("Option 2", 2), ("Option 3", 3), ("Option 4", 4)]
