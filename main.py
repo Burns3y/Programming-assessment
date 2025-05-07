@@ -39,7 +39,7 @@ class GUI:
 
         # Answer options
         self.answer_frame = Frame(self.parent, bg=PURPLE2)
-        self.answer = IntVar(self.parent)
+        self.answer = StringVar(self.parent)
         self.answer_frame.grid(row=2, column=0, columnspan=2)
 
         answer_options = [("Option 1", 1), ("Option 2", 2), ("Option 3", 3), ("Option 4", 4)]
@@ -55,7 +55,7 @@ class GUI:
         self.control_frame = Frame(self.parent, bg=PURPLE2)
         self.control_frame.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
-        self.submit_button = Button(self.control_frame, text="Submit", bg=PURPLE1, fg="white")
+        self.submit_button = Button(self.control_frame, text="Submit", command=self.submit_answer ,bg=PURPLE1, fg="white")
         self.submit_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
         self.skip_button = Button(self.control_frame, text="Skip", command=self.skip_question, bg=PURPLE1, fg="white")
@@ -64,10 +64,14 @@ class GUI:
         self.skip_button.grid(row=4, column=1, padx=10, pady=10, sticky="w")
         self.restart_button.grid(row=4, column=0, padx=10, pady=10, sticky="e")
 
+        # Display the first question
+        self.display_question()
+
 
     def skip_question(self):
-        """Skip the current question and move to the next one."""
+        """Skip the current question."""
         self.display_question()
+        messagebox.showinfo("Question Skipped", "You skipped the question.")
 
     def restart_quiz(self):
         """Restart the quiz."""
@@ -76,15 +80,38 @@ class GUI:
     def display_question(self):
         '''Display the question and options on the GUI
         
-        Gets the question and answers from get_random_question() in the Player class.
+        Get the question and answers from get_random_question() in the Player class.
         '''
         # Configures option buttons
         question, options = self.player.get_random_question()
         self.question_label.config(text=question)
         self.question_number_label.config(text=f"Question {self.player.correct_answers + 1}")
         
-        for button in self.answer_buttons:
-            button.config(text=options[self.answer_buttons.index(button)], value=options[self.answer_buttons.index(button)])
+        for i, button in enumerate(self.answer_buttons):
+            button.config(text=options[i], value=options[i])
+
+    def submit_answer(self):
+        print(f"Answer: {self.player.correct_answer}, Selected: {self.answer.get()}")
+        """Submit the answer and check if it's correct."""
+        # Check if there is an answer and sets it to a variable
+        selected_answer = self.answer.get()
+        if selected_answer == 0:
+            messagebox.showwarning("No answer selected", "Please select an answer.")
+            return
+
+        if selected_answer == self.player.correct_answer:
+            self.player.correct_answers += 1
+            messagebox.showinfo("Correct!", "You got it right!")
+        else:
+            self.player.incorrect_questions.append(self.player.question)
+            messagebox.showerror("Incorrect", f"Wrong! The correct answer was {self.player.correct_answer}.")
+
+        # Check if there are more questions left
+        if len(self.player.questions) > 0:
+            self.display_question()
+        else:
+            messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
+            self.parent.quit()
 
 
 class Player:
@@ -107,12 +134,8 @@ class Player:
     def get_random_question(self):
         """Get a random question from the list of questions.""" 
         self.question = random.choice(list(self.questions.keys()))
-        answer_option = self.questions[self.question][4]
-        # self.answer = self.questions[self.question][answer_option]
+        self.correct_answer = self.questions[self.question][4]
         options = self.questions[self.question][:4]
-
-        # print(f"Question: {self.question}")
-        # print(f"Answer: {self.answer}")
 
         del self.questions[self.question]
         return self.question, options
