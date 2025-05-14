@@ -16,7 +16,7 @@ class UsefulMethods:
             "How many unique colours does the flag of South Africa have?": ["3", "4", "5", "6", "6"],
             "What is the capital of Switzerland?": ["Zurich", "Bern", "Geneva", "Lausanne", "Bern"],
             "When was the first manned moon landing?": ["1969", "1970", "1968", "1971", "1969"],
-            "Who painted the Mona Lisa?": ["Vincent Van Gogh", "Picasso", "Leonardo Da Vinci", "Leonardo DiCaprio", "Da Vinci"],
+            "Who painted the Mona Lisa?": ["Vincent Van Gogh", "Picasso", "Leonardo Da Vinci", "Leonardo DiCaprio", "Leonardo Da Vinci"],
             "What is the largest country in the world by land mass?": ["USA", "China", "Russia", "Canada", "Russia"],
             "What is the capital of Mongolia?": ["Ulaanbaatar", "Beijing", "Seoul", "Tokyo", "Ulaanbaatar"],
             "What is the chemical symbol for potassium?": ["K", "P", "Na", "Ca", "K"],
