@@ -202,7 +202,7 @@ class Player:
         """
         self.correct_answers = 0
         self.skipped_questions = {}
-        self.questions = f.UsefulMethods().questions
+        self.questions = f.questions
 
     def get_random_question(self):
         """Get a random question from the list of questions."""
