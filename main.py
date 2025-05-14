@@ -48,14 +48,12 @@ class GUI:
         if self.question_num >= TOTAL_QUESTIONS:
             self.check_skipped_questions()
 
-        print(self.player.skipped_questions)
-
     def start_quiz(self):
         """Set up basic quiz GUI."""
         # Removes everything from the window
         for widget in self.parent.winfo_children():
             widget.destroy()
-        
+
         self.player.questions = f.questions.copy()
 
         # Question number
@@ -77,8 +75,6 @@ class GUI:
         self.question_frame.columnconfigure(0, weight=1)
 
         self.question_number_label = Label(self.question_frame, text="Question 1", bg=COLOUR2, fg="white")
-        self.questions_left = Label(self.question_frame, text=f"Questions left: {TOTAL_QUESTIONS}", bg=COLOUR2, fg="white")
-        self.questions_left.grid(row=0, column=1, sticky="e")
         self.question_number_label.grid(row=0, column=0, sticky="w")
         self.question_label = Label(self.question_frame, text="Question will be displayed here", bg=COLOUR2, fg="white")
         self.question_label.grid(row=1, column=0, sticky="nesw")
@@ -129,6 +125,7 @@ class GUI:
             self.options = current_skipped_question[1][1]
             self.player.correct_answer = self.options[4]
             self.answering_skipped = True
+            self.question_number_label.config(text="Not sure? Guess!")
 
         self.question_label.config(text=self.question)
 
@@ -150,26 +147,25 @@ class GUI:
             messagebox.showerror("Incorrect", f"Wrong! The correct answer was {self.player.correct_answer}.")
 
         # Check if there are more questions left
+        if not self.answering_skipped:
+            self.question_num += 1
         if self.question_num >= TOTAL_QUESTIONS:
             self.check_skipped_questions()
         # If no more skipped questions
         else:
             self.display_question()
-            self.question_num += 1
             self.question_number_label.config(text=f"Question {self.question_num}")
-            self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
 
     def check_skipped_questions(self):
         """Check if there are any skipped questions left."""
         # If no skipped questions
         if not self.player.skipped_questions:
-            messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
             self.end_quiz()
+            messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
         # If answering skipped questions
         elif self.answering_skipped:
             self.question_number_label.config(text="Not sure? Guess!")
             self.display_question(True)
-            self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
 
         else:
             self.skip_button.config(state="disabled")
