@@ -12,23 +12,60 @@ TOTAL_QUESTIONS = 10
 
 
 class GUI:
-    """Creating the basic GUI for the quiz."""
+    """Creating the basic GUI for the quiz.
+    
+    Logically deals with:
+    Displaying questions
+    Ensuring correct number of questions left
+    Starting/finishing the quiz.
+    """
 
     def __init__(self, parent, player):
         """Create the GUI."""
         self.parent = parent
         self.player = player
         self.parent.config(bg=COLOUR2)
-        # self.answer.set(1)
+        
+        #Start
+        self.start_quiz()
+
+
+    def skip_question(self):
+        """Skip the current question."""
+        # Adds skipped question to the skipped questions list
+        self.options.append(self.player.correct_answer)
+        self.player.skipped_questions[self.question_num] = [self.question, self.options]
+
+        # Shows next question
+        messagebox.showinfo("Question Skipped", "You skipped the question.")
+        self.question_num += 1
+        self.display_question()
+        self.question_number_label.config(text=f"Question {self.question_num}")
+
+        # If there are no more questions left moves to the skipped questions
+        if self.question_num >= TOTAL_QUESTIONS:
+            self.check_skipped_questions()
+
+
+        print(self.player.skipped_questions)
+
+    def start_quiz(self):
+        """Basic setup for the quiz GUI."""
+        # Removes everything from the window
+        for widget in self.parent.winfo_children():
+            widget.destroy()
+
         # Question number
         self.question_num = 1
+        self.player.correct_answers = 0
+        self.player.skipped_questions = {}
         self.answering_skipped = False
 
         # Title section
         self.title_frame = Frame(self.parent, bg=COLOUR1)
         self.title_frame.grid(row=0, column=0, columnspan=2, sticky="nesw")
         self.title_frame.columnconfigure(0, weight=1)
-        self.title_label = Label(self.title_frame, text="QUIZ", bg=COLOUR1, fg="white", font=("Montserrat", 20))
+        self.title_label = Label(self.title_frame, text="QUIZ", bg=COLOUR1, fg="white", font=("Arial", 20))
         self.title_label.grid(row=0, column=0, sticky="ew")
 
         # Where the questions will be displayed
@@ -51,6 +88,7 @@ class GUI:
 
         self.answer_buttons = []
 
+        #Setting up radiobuttons
         for i in range(4):
             answer_option = Radiobutton(self.answer_frame, variable=self.answer, value=i, text=f"Option {i}", bg=COLOUR2, fg="white", selectcolor=COLOUR1, activebackground=COLOUR1, activeforeground="white")
             # Formats the grid into a 2x2 layout
@@ -65,36 +103,13 @@ class GUI:
         self.submit_button.grid(row=3, column=0, columnspan=2, padx=PADX, pady=PADY, sticky="ew")
 
         self.skip_button = Button(self.control_frame, text="Skip", command=self.skip_question, bg=COLOUR1, fg="white")
-        self.restart_button = Button(self.control_frame, text="Restart", command=self.restart_quiz, bg=COLOUR1, fg="white")
+        self.restart_button = Button(self.control_frame, text="Restart", command=self.start_quiz, bg=COLOUR1, fg="white")
 
         self.skip_button.grid(row=4, column=1, padx=PADX, pady=PADY, sticky="w")
         self.restart_button.grid(row=4, column=0, padx=PADX, pady=PADY, sticky="e")
 
         # Display the first question
         self.display_question()
-
-    def skip_question(self):
-        """Skip the current question."""
-        # Adds skipped question to the skipped questions list
-        self.options.append(self.player.correct_answer)
-        self.player.skipped_questions[self.question_num] = [self.question, self.options]
-
-        # Shows next question
-        messagebox.showinfo("Question Skipped", "You skipped the question.")
-        self.question_num += 1
-        self.display_question()
-        self.question_number_label.config(text=f"Question {self.question_num}")
-
-        # If there are no more questions left moves to the skipped questions
-        if self.question_num >= TOTAL_QUESTIONS:
-            self.check_skipped_questions()
-
-
-        print(self.player.skipped_questions)
-
-    def restart_quiz(self):
-        """Restart the quiz."""
-        pass
 
     def display_question(self, skipped_question=False):
         """Display the question and options on the GUI.
@@ -146,17 +161,29 @@ class GUI:
          #If no skipped questions
             if not self.player.skipped_questions:
                 messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
+                self.end_quiz()
             #If answering skipped questions
             elif self.answering_skipped:
+                self.question_number_label.config(text="Not sure? Guess!")
                 self.display_question(True)
                 self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
-                self.question_number_label.config(text="Not sure? Guess!")
             
             else:
-                self.title_label.config(text="Skipped Questions")
                 self.skip_button.config(state="disabled")
                 self.answering_skipped = True
                 self.display_question(True)
+                self.title_label.config(text="Skipped Questions")
+    
+    def end_quiz(self):
+        """End the quiz and show the results."""
+        for frame in (self.title_frame, self.question_frame, self.answer_frame, self.control_frame):
+            frame.grid_forget()
+        self.title_label = Label(self.parent, text="Quiz Finished", bg=COLOUR1, fg="white", font=("Montserrat", 20))
+        self.title_label.grid(row=0, column=0, columnspan=2, sticky="ew")
+        self.score_label = Label(self.parent, text=f"You answered {self.player.correct_answers} questions correctly.", bg=COLOUR2, fg="white")
+        self.score_label.grid(row=1, column=0, columnspan=2, padx=PADX, pady=PADY, sticky="ew")
+        self.restart_button = Button(self.parent, text="Restart", command=self.start_quiz, bg=COLOUR1, fg="white")
+        self.restart_button.grid(row=1, column=0, columnspan=2, padx=PADX, pady=PADY, sticky="ew")
 
 
 class Player:
