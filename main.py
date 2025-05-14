@@ -13,7 +13,7 @@ TOTAL_QUESTIONS = 10
 
 class GUI:
     """Creating the basic GUI for the quiz.
-    
+
     Logically deals with:
     Displaying questions
     Ensuring correct number of questions left
@@ -25,10 +25,12 @@ class GUI:
         self.parent = parent
         self.player = player
         self.parent.config(bg=COLOUR2)
-        
-        #Start
-        self.start_quiz()
 
+        # Bind Enter key to submit
+        self.parent.bind("<Return>", self.submit_answer)
+
+        # Start
+        self.start_quiz()
 
     def skip_question(self):
         """Skip the current question."""
@@ -46,14 +48,15 @@ class GUI:
         if self.question_num >= TOTAL_QUESTIONS:
             self.check_skipped_questions()
 
-
         print(self.player.skipped_questions)
 
     def start_quiz(self):
-        """Basic setup for the quiz GUI."""
+        """Set up basic quiz GUI."""
         # Removes everything from the window
         for widget in self.parent.winfo_children():
             widget.destroy()
+        
+        self.player.questions = f.questions.copy()
 
         # Question number
         self.question_num = 1
@@ -88,7 +91,7 @@ class GUI:
 
         self.answer_buttons = []
 
-        #Setting up radiobuttons
+        # Setting up radiobuttons
         for i in range(4):
             answer_option = Radiobutton(self.answer_frame, variable=self.answer, value=i, text=f"Option {i}", bg=COLOUR2, fg="white", selectcolor=COLOUR1, activebackground=COLOUR1, activeforeground="white")
             # Formats the grid into a 2x2 layout
@@ -132,7 +135,7 @@ class GUI:
         for i, button in enumerate(self.answer_buttons):
             button.config(text=self.options[i], value=self.options[i])
 
-    def submit_answer(self):
+    def submit_answer(self, event=None):
         """Submit the answer and check if it's correct."""
         # Check if there is an answer and sets it to a variable
         selected_answer = self.answer.get()
@@ -149,7 +152,7 @@ class GUI:
         # Check if there are more questions left
         if self.question_num >= TOTAL_QUESTIONS:
             self.check_skipped_questions()
-        #If no more skipped questions
+        # If no more skipped questions
         else:
             self.display_question()
             self.question_num += 1
@@ -157,23 +160,23 @@ class GUI:
             self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
 
     def check_skipped_questions(self):
-            """Check if there are any skipped questions left."""
-         #If no skipped questions
-            if not self.player.skipped_questions:
-                messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
-                self.end_quiz()
-            #If answering skipped questions
-            elif self.answering_skipped:
-                self.question_number_label.config(text="Not sure? Guess!")
-                self.display_question(True)
-                self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
-            
-            else:
-                self.skip_button.config(state="disabled")
-                self.answering_skipped = True
-                self.display_question(True)
-                self.title_label.config(text="Skipped Questions")
-    
+        """Check if there are any skipped questions left."""
+        # If no skipped questions
+        if not self.player.skipped_questions:
+            messagebox.showinfo("Quiz Finished", f"You answered {self.player.correct_answers} questions correctly.")
+            self.end_quiz()
+        # If answering skipped questions
+        elif self.answering_skipped:
+            self.question_number_label.config(text="Not sure? Guess!")
+            self.display_question(True)
+            self.questions_left.config(text=f"Questions left: {TOTAL_QUESTIONS+1 - self.question_num}")
+
+        else:
+            self.skip_button.config(state="disabled")
+            self.answering_skipped = True
+            self.display_question(True)
+            self.title_label.config(text="Skipped Questions")
+
     def end_quiz(self):
         """End the quiz and show the results."""
         for frame in (self.title_frame, self.question_frame, self.answer_frame, self.control_frame):
@@ -202,7 +205,7 @@ class Player:
         """
         self.correct_answers = 0
         self.skipped_questions = {}
-        self.questions = f.questions
+        self.questions = f.questions.copy()
 
     def get_random_question(self):
         """Get a random question from the list of questions."""

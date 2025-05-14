@@ -1,3 +1,5 @@
+"""The questions for main.py quiz."""
+
 questions = {
     "What is the chemical symbol for gold?": ["Au", "Ag", "Fe", "Pb", "Au"],
     "What is the smallest prime number?": ["1", "2", "3", "4", "2"],
